@@ -7,7 +7,8 @@ Copyright 2016 Lucas Walter
 #include <std_msgs/String.h>
 #include <xdo_ros/Mouse.h>
 
-extern "C" {
+extern "C"
+{
 #include <xdo.h>
 }
 
@@ -50,7 +51,6 @@ XdoRos::XdoRos()
 
 void XdoRos::update(const ros::TimerEvent& e)
 {
-
 }
 
 void XdoRos::mousePosCallback(const opencv_apps::Point2D::ConstPtr& msg)

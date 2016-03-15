@@ -5,12 +5,16 @@ project(xdo_ros)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  # TODO(lucasw) remove this once opencv_apps is updated  
   geometry_msgs
   message_generation
   opencv_apps
   roscpp
+  roslint
   std_msgs
 )
+
+roslint_cpp()
 
 ## System dependencies are found with CMake's conventions
 # find_package(xdo REQUIRED)
@@ -74,7 +78,9 @@ add_message_files(
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  geometry_msgs  # It seems like opencv_apps needs to CATKIN_DEPENDS this TODO(lucasw)
+  # TODO(lucasw) remove this once opencv_apps is updated 
+  # https://github.com/ros-perception/vision_opencv/pull/119
+  geometry_msgs
   opencv_apps  # Or other packages containing msgs
   std_msgs
 )

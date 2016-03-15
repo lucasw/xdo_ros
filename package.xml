@@ -41,11 +41,12 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>libxdo-dev</build_depend>
-  <!-- TODO(lucaw) this should be gotten through opencv_apps -->
+  <!-- TODO(lucaw) remove this once opencv_apps is updates -->
   <build_depend>geometry_msgs</build_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>opencv_apps</build_depend>
   <build_depend>roscpp</build_depend>
+  <build_depend>roslint</build_depend>
   <build_depend>std_msgs</build_depend>
   <run_depend>message_runtime</run_depend>
   <run_depend>roscpp</run_depend>
