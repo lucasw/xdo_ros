@@ -40,17 +40,35 @@ XdoRos::XdoRos()
   xdo_ = xdo_new(NULL);
   window_ = CURRENTWINDOW;
   // TODO(lucasw) check xdo for success?
-  point_sub_ = nh_.subscribe("mouse_pos", 1, &XdoRos::mousePosCallback, this);
-  mouse_rel_sub_ = nh_.subscribe("mouse_rel", 1, &XdoRos::mouseRelCallback, this);
-  string_sub_ = nh_.subscribe("string", 1, &XdoRos::stringCallback, this);
-  keys_down_sub_ = nh_.subscribe("keys_down", 1, &XdoRos::keysDownCallback, this);
-  keys_up_sub_ = nh_.subscribe("keys_up", 1, &XdoRos::keysUpCallback, this);
+  point_sub_ = nh_.subscribe("set_mouse_pos", 1, &XdoRos::mousePosCallback, this);
+  mouse_rel_sub_ = nh_.subscribe("set_mouse_rel", 1, &XdoRos::mouseRelCallback, this);
+  string_sub_ = nh_.subscribe("set_string", 1, &XdoRos::stringCallback, this);
+  keys_down_sub_ = nh_.subscribe("set_keys_down", 1, &XdoRos::keysDownCallback, this);
+  keys_up_sub_ = nh_.subscribe("set_keys_up", 1, &XdoRos::keysUpCallback, this);
+  point_pub_ = nh_.advertise<xdo_ros::Mouse>("mouse", 3);
   // TODO(lucasw) make duration parameter
-  timer_ = nh_.createTimer(ros::Duration(0.1), &XdoRos::update, this);
+  timer_ = nh_.createTimer(ros::Duration(0.05), &XdoRos::update, this);
 }
 
 void XdoRos::update(const ros::TimerEvent& e)
 {
+  // TODO(lucasw) instead of lots of messages at a high update rate, could
+  // sample the mouse at a higher rate internally but then publish an array
+  // of position that would be the path since the last update.
+  int x, y, screen_num;
+  Window window;
+  xdo_get_mouse_location2(xdo_, &x, &y, &screen_num, &window);
+  xdo_ros::Mouse mouse;
+  mouse.pos.x = x;
+  mouse.pos.y = y;
+  mouse.screen_num = screen_num;
+  mouse.header.stamp = ros::Time::now();
+  unsigned char* name;
+  int size;
+  int type;
+  xdo_get_window_name(xdo_, window, &name, &size, &type);
+  mouse.window_name = reinterpret_cast<const char*>(name);
+  point_pub_.publish(mouse);
 }
 
 void XdoRos::mousePosCallback(const opencv_apps::Point2D::ConstPtr& msg)
