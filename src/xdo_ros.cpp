@@ -5,6 +5,8 @@ Copyright 2016 Lucas Walter
 #include <opencv_apps/Point2D.h>
 #include <ros/ros.h>
 #include <std_msgs/String.h>
+#include <xdo_ros/Mouse.h>
+
 extern "C" {
 #include <xdo.h>
 }
@@ -25,6 +27,9 @@ protected:
   void keysDownCallback(const std_msgs::String::ConstPtr& msg);
   ros::Subscriber keys_up_sub_;
   void keysUpCallback(const std_msgs::String::ConstPtr& msg);
+  ros::Publisher point_pub_;
+  ros::Timer timer_;
+  void update(const ros::TimerEvent& e);
   xdo_t* xdo_;
   Window window_;
 };
@@ -39,6 +44,13 @@ XdoRos::XdoRos()
   string_sub_ = nh_.subscribe("string", 1, &XdoRos::stringCallback, this);
   keys_down_sub_ = nh_.subscribe("keys_down", 1, &XdoRos::keysDownCallback, this);
   keys_up_sub_ = nh_.subscribe("keys_up", 1, &XdoRos::keysUpCallback, this);
+  // TODO(lucasw) make duration parameter
+  timer_ = nh_.createTimer(ros::Duration(0.1), &XdoRos::update, this);
+}
+
+void XdoRos::update(const ros::TimerEvent& e)
+{
+
 }
 
 void XdoRos::mousePosCallback(const opencv_apps::Point2D::ConstPtr& msg)

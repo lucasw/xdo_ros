@@ -5,6 +5,8 @@ project(xdo_ros)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  message_generation
   opencv_apps
   roscpp
   std_msgs
@@ -49,11 +51,11 @@ endif(xdo_LIBRARY)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  Mouse.msg
+#   Key.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -70,10 +72,12 @@ endif(xdo_LIBRARY)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  geometry_msgs  # It seems like opencv_apps needs to CATKIN_DEPENDS this TODO(lucasw)
+  opencv_apps  # Or other packages containing msgs
+  std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -107,7 +111,7 @@ endif(xdo_LIBRARY)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES xdo_ros
-#  CATKIN_DEPENDS rospy
+  CATKIN_DEPENDS message_runtime  # opencv_apps
 #  DEPENDS system_lib
 )
 
@@ -119,6 +123,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -138,6 +143,9 @@ add_executable(xdo_ros src/xdo_ros.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(xdo_ros_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# TODO(lucasw) It seems like this should be mentioned in the msg tutorial
+# http://wiki.ros.org/ROS/Tutorials/CreatingMsgAndSrv
+add_dependencies(xdo_ros xdo_ros_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(xdo_ros
