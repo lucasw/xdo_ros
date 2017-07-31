@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   opencv_apps
   roscpp
   roslint
+  sensor_msgs
   std_msgs
 )
 
